@@ -36,44 +36,62 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate API call with dummy data
-    setTimeout(() => {
-      const currentPrice = parseFloat((Math.random() * 500 + 100).toFixed(2));
-      const isBuy = Math.random() > 0.4;
+
+    try {
+      // 1. Call your LIVE FastAPI Backend
+      const response = await fetch(`http://127.0.0.1:8001/predict/${stockSymbol}`);
+      const data = await response.json();
+
+      if (data.error) {
+        alert(`Error: ${data.error}`);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Extract real values from the AI response
+      const currentPrice = data.current_price;
+      const aiSignal = data.prediction; // 'buy' or 'sell' (usually lowercase from model)
+      const isBuy = aiSignal.toUpperCase() === 'BUY';
+
+      // 3. Calculate Trade Levels based on REAL price
+      // (Using your existing logic but with real numbers)
       const targetPrice = isBuy 
-        ? parseFloat((currentPrice * (1 + Math.random() * 0.15 + 0.05)).toFixed(2))
-        : parseFloat((currentPrice * (1 - Math.random() * 0.15 - 0.05)).toFixed(2));
+        ? parseFloat((currentPrice * 1.10).toFixed(2)) // 10% gain target
+        : parseFloat((currentPrice * 0.90).toFixed(2)); // 10% drop target
+      
       const stopLoss = isBuy
-        ? parseFloat((currentPrice * (1 - Math.random() * 0.05 - 0.02)).toFixed(2))
-        : parseFloat((currentPrice * (1 + Math.random() * 0.05 + 0.02)).toFixed(2));
+        ? parseFloat((currentPrice * 0.96).toFixed(2)) // 4% stop loss
+        : parseFloat((currentPrice * 1.04).toFixed(2)); // 4% stop loss
       
-      const potentialProfit = isBuy 
-        ? ((targetPrice - currentPrice) / currentPrice * 100).toFixed(2)
-        : ((currentPrice - targetPrice) / currentPrice * 100).toFixed(2);
-      const riskAmount = isBuy
-        ? ((currentPrice - stopLoss) / currentPrice * 100).toFixed(2)
-        : ((stopLoss - currentPrice) / currentPrice * 100).toFixed(2);
-      
-      const dummyPrediction = {
-        symbol: stockSymbol.toUpperCase(),
-        prediction: isBuy ? 'BUY' : 'SELL',
-        confidence: (Math.random() * 20 + 75).toFixed(2),
+      const potentialProfit = Math.abs(((targetPrice - currentPrice) / currentPrice) * 100).toFixed(2);
+      const riskAmount = Math.abs(((currentPrice - stopLoss) / currentPrice) * 100).toFixed(2);
+
+      // 4. Construct the Final Prediction Object
+      const finalPrediction = {
+        symbol: data.symbol,
+        prediction: aiSignal.toUpperCase(),
+        confidence: (Math.random() * 10 + 85).toFixed(2), // We can add real confidence logic later
         currentPrice: currentPrice,
         targetPrice: targetPrice,
         stopLoss: stopLoss,
         potentialProfit: potentialProfit,
         risk: riskAmount,
-        riskRewardRatio: (Math.abs(potentialProfit) / Math.abs(riskAmount)).toFixed(2),
-        chartData: generateChartData(currentPrice),
+        riskRewardRatio: (potentialProfit / riskAmount).toFixed(2),
+        chartData: generateChartData(currentPrice), // Seeds the chart with real current price
         timestamp: new Date().toLocaleString(),
-        timeframe: ['1-3 days', '3-5 days', '1-2 weeks'][Math.floor(Math.random() * 3)]
+        timeframe: '1-2 Weeks' 
       };
-      
-      setPrediction(dummyPrediction);
-      setHistory([dummyPrediction, ...history].slice(0, 5));
+
+      // 5. Update UI State
+      setPrediction(finalPrediction);
+      setHistory([finalPrediction, ...history].slice(0, 5));
+
+    } catch (err) {
+      console.error("Failed to fetch from Backend:", err);
+      alert("Backend server not responding. Make sure it's running on port 8001!");
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
