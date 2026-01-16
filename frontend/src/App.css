@@ -302,6 +302,11 @@ body {
   color: white;
 }
 
+.prediction-badge.hold {
+  background: #F59E0B; /* Amber/Yellow */
+  color: white;
+}
+
 /* Chart Styles */
 .chart-container {
   margin: 20px 0;

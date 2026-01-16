@@ -68,7 +68,8 @@ function App() {
           const cleanList = data.quotes.filter(item => 
             item.isYahooFinance && 
             item.exchDisp && 
-            item.exchDisp.toUpperCase().includes('NASDAQ')
+            item.exchDisp.toUpperCase().includes('NASDAQ') ||
+            item.exchDisp.toUpperCase().includes('NYSE')
           );
           
           setFilteredStocks(cleanList);
