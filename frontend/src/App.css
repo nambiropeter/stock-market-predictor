@@ -84,10 +84,17 @@ body {
   gap: 20px;
 }
 
+.form-row {
+  display: flex;
+  gap: 15px; /* Adds space between inputs if they are side by side */
+}
+
 .input-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1; /* Allows inputs to grow */
+  position: relative; /* CRITICAL for dropdown positioning */
 }
 
 .input-group label {
@@ -103,6 +110,7 @@ body {
   font-size: 1rem;
   transition: all 0.3s ease;
   outline: none;
+  width: 100%;
 }
 
 .stock-input:focus {
@@ -114,6 +122,93 @@ body {
   background: #f7fafc;
   cursor: not-allowed;
 }
+
+/* --- AUTOCOMPLETE DROPDOWN STYLES --- */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  margin-top: 2px;
+  padding: 0;
+}
+
+/* Custom Scrollbar */
+.autocomplete-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+.autocomplete-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0 0 8px 0;
+}
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Dropdown Items */
+.autocomplete-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease-in-out;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background-color: #eff6ff; /* Light Blue Background */
+  border-left: 4px solid #2563eb; /* Blue Indicator */
+  padding-left: 14px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.item-symbol {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1e40af;
+  letter-spacing: 0.5px;
+}
+
+.item-exchange {
+  font-size: 0.7rem;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.item-name {
+  color: #64748b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- END AUTOCOMPLETE --- */
 
 .predict-btn {
   padding: 14px 28px;
