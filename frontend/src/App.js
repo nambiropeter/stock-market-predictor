@@ -68,8 +68,10 @@ function App() {
           const cleanList = data.quotes.filter(item => 
             item.isYahooFinance && 
             item.exchDisp && 
+          (
             item.exchDisp.toUpperCase().includes('NASDAQ') ||
             item.exchDisp.toUpperCase().includes('NYSE')
+          )
           );
           
           setFilteredStocks(cleanList);
@@ -238,7 +240,7 @@ function App() {
                     <span className="stock-timeframe">{prediction.timeframe}</span>
                   </div>
                   <span className={`prediction-badge ${prediction.prediction.toLowerCase()}`}>
-                    {prediction.prediction} SIGNAL
+                    {prediction.prediction} 
                   </span>
                 </div>
                 

@@ -532,6 +532,12 @@ body {
   color: #991b1b;
 }
 
+.history-badge.hold {
+  background: #FEF3C7;   
+  color: #F59E0B;        
+}
+
+
 .history-confidence {
   font-weight: 600;
   color: #4a5568;
